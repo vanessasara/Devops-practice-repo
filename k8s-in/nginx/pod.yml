@@ -1,0 +1,20 @@
+kind: Pod
+apiVersion: v1
+metadata:
+  name: nginx-pod
+  namespace: nginx
+
+spec:
+  containers:
+  - name: nginx
+    image: nginx:latest
+    ports:
+    - containerPort: 80
+
+#This applies toleration in pods whether its getting insulted still they will enter in tainted nodes
+
+  tolerations:
+    - key: "pass"
+      operator: "Equal"
+      value: 'true'
+      effect: 'NoSchedule'
