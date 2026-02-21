@@ -65,7 +65,7 @@ kind create cluster --config kind-config.yml --name k8s-cluster
 ## 3. Verify Cluster
 
 ```bash
-kubectl cluster-info --context k8s-cluster
+kubectl cluster-info --context kind-k8s-cluster
 kubectl get nodes
 ```
 
