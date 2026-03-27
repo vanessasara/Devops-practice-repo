@@ -1,0 +1,7 @@
+FROM nginx:1.29.7-alpine
+
+RUN apt-get update
+
+COPY index.html /usr/share/nginx.html
+
+CMD ["inginx","-g","deamon off;"]
