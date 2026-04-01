@@ -10,7 +10,7 @@ spec:
     targetRevision: master
     path: argocd-demos/declarative_online_store_demo
   destination:
-    server: http://127.0.0.1:8080
+    server: https://kubernetes.default.svc
     namespace: default
   syncPolicy:
     automated:
