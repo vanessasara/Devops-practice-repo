@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: online-shop
-        image: venisasarah/sony-interior:frontendv1.0.1
+        image: venisasarah/sony-interior:frontendv1.0.2
         ports:
         - containerPort: 3000
         resources:
