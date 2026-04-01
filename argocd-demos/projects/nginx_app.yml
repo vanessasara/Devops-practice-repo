@@ -10,7 +10,7 @@ spec:
     targetRevision: main        # Branch to watch
     path: argocd-demos/projects     # Path in repo with manifests
   destination:
-    server: https://127.0.0.1:8080  # Target cluster, run `argocd cluster list` to see
+    server: https://kubernetes.default.svc  # Target cluster, run `argocd cluster list` to see
     namespace: frontend          # Namespace inside that cluster
   syncPolicy:                    # Sync policy settings
     automated:                   # Enable automated sync
