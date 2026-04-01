@@ -8,7 +8,7 @@ spec:
   source:
     repoURL: https://github.com/Devops-practice-repo.git  # Git repo
     targetRevision: main        # Branch to watch
-    path: argocd-demos/projects     # Path in repo with manifests
+    path: argocd-demos/nginx-demo     # Path in repo with manifests
   destination:
     server: https://kubernetes.default.svc # Target cluster, run `argocd cluster list` to see
     namespace: frontend          # Namespace inside that cluster
