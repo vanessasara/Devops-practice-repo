@@ -6,7 +6,7 @@ metadata:                        # Metadata section
 spec:
   project: frontend-team        # Assigns app to the frontend-team Project
   source:
-    repoURL: https://github.com/Devops-practice-repo.git  # Git repo
+    repoURL: https://github.com/vanessasara/Devops-practice-repo.git  # Git repo
     targetRevision: master        # Branch to watch
     path: argocd-demos/nginx-demo     # Path in repo with manifests
   destination:
