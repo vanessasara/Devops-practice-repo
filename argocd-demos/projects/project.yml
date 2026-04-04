@@ -9,7 +9,7 @@ spec:
     - https://github.com/vanessasara/Devops-practice-repo.git
   destinations:                # Which clusters/namespaces apps in this Project can target
     - namespace: frontend
-      server: https://127.0.0.1:33893  # Target cluster server url
+      server: https://kubernetes.default.svc  # Target cluster server url
   clusterResourceWhitelist:    # Which cluster-wide resources are allowed (e.g., CRDs)
     - group: "*"               # '*' means allow all groups
       kind: "*"                # '*' means allow all kinds
