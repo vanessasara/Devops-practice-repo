@@ -7,7 +7,7 @@ spec:
   project: frontend-team        # Assigns app to the frontend-team Project
   source:
     repoURL: https://github.com/Devops-practice-repo.git  # Git repo
-    targetRevision: main        # Branch to watch
+    targetRevision: master        # Branch to watch
     path: argocd-demos/nginx-demo     # Path in repo with manifests
   destination:
     server: https://kubernetes.default.svc # Target cluster, run `argocd cluster list` to see
