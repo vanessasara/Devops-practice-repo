@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: chai-app
-        image: amitabhdevops/chai-devops:v1.0.0
+        image: amitabhdevops/chai-devops:latest #changed the image for degrade email test
         ports:
         - containerPort: 80
         env:
