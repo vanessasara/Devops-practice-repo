@@ -13,7 +13,9 @@ spec:
           - app: online-shop
             path: argocd-demos/declarative_online_store_demo   # path in repo for this app
           - app: apache
-            path: argocd-demos/apache_deployment-cli   # path in repo for this app
+            path: argocd-demos/apache_deployment-cli
+          - app: chai-app
+            path: argocd-demos/applicationSets   # path in repo for this app
   # Template that will be used to generate individual Application CRs
   template:
     metadata:
