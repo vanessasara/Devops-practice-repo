@@ -24,7 +24,7 @@ spec:
     spec:
       project: default
       source:
-        repoURL: https://github.com/vanessasara/Devops-practice.git
+        repoURL: https://github.com/vanessasara/Devops-practice-repo.git
         targetRevision: master
         path: '{{path}}'                # resolved from element
       destination:
