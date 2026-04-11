@@ -1,0 +1,93 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: argocd-notifications-cm
+  namespace: argocd
+data:
+  context: |
+    argocdUrl: "http://127.0.0.1:8080"
+
+  service.email: |
+    username: $email-username
+    password: $email-password
+    host: smtp.gmail.com
+    port: 465
+    from: $email-username
+
+  template.email-health-degraded: |
+    email:
+      subject: "🚨 [ALERT] {{.app.metadata.name}} is Degraded — Immediate Action Required"
+    message: |
+      ============================================================
+      ❌  DEPLOYMENT HEALTH ALERT
+      ============================================================
+
+      Hi Team,
+
+      Your ArgoCD application has entered a Degraded state and
+      may require immediate attention.
+
+      ------------------------------------------------------------
+      📋  APPLICATION DETAILS
+      ------------------------------------------------------------
+      🏷️  App Name       : {{.app.metadata.name}}
+      📂  Namespace      : {{.app.metadata.namespace}}
+      ❤️  Health Status  : {{.app.status.health.status}}
+      🔄  Sync Status    : {{.app.status.sync.status}}
+      📌  Revision       : {{.app.status.sync.revision}}
+      📝  Health Message : {{.app.status.health.message}}
+      ⚙️  Last Operation : {{ if .app.operationState }}{{ .app.operationState.phase }}{{ else }}<none>{{ end }}
+
+      ------------------------------------------------------------
+      🔗  VIEW IN ARGOCD
+      ------------------------------------------------------------
+      {{.context.argocdUrl}}/applications/{{.app.metadata.name}}
+
+      ------------------------------------------------------------
+      Please investigate and resolve the issue as soon as possible.
+
+      — ArgoCD Notification System
+      ============================================================
+
+  template.email-deployed: |
+    email:
+      subject: "✅ [SUCCESS] {{.app.metadata.name}} Deployed Successfully"
+    message: |
+      ============================================================
+      ✅  DEPLOYMENT SUCCESSFUL
+      ============================================================
+
+      Hi Team,
+
+      Great news! Your application has been successfully deployed
+      and is running healthy.
+
+      ------------------------------------------------------------
+      📋  APPLICATION DETAILS
+      ------------------------------------------------------------
+      🏷️  App Name       : {{.app.metadata.name}}
+      📂  Namespace      : {{.app.metadata.namespace}}
+      ❤️  Health Status  : {{.app.status.health.status}}
+      🔄  Sync Status    : {{.app.status.sync.status}}
+      📌  Revision       : {{.app.status.sync.revision}}
+      ⚙️  Last Operation : {{ if .app.operationState }}{{ .app.operationState.phase }}{{ else }}<none>{{ end }}
+      🕐  Finished At    : {{ if .app.operationState }}{{ .app.operationState.finishedAt }}{{ end }}
+
+      ------------------------------------------------------------
+      🔗  VIEW IN ARGOCD
+      ------------------------------------------------------------
+      {{.context.argocdUrl}}/applications/{{.app.metadata.name}}
+
+      ------------------------------------------------------------
+      No further action required.
+
+      — ArgoCD Notification System
+      ============================================================
+
+  trigger.on-health-degraded: |
+    - when: app.status.health.status == 'Degraded'
+      send: [email-health-degraded]
+
+  trigger.on-deployed: |
+    - when: app.status.operationState.phase == 'Succeeded' and app.status.health.status == 'Healthy'
+      send: [email-deployed]
