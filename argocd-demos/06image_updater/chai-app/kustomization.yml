@@ -8,10 +8,6 @@ resources:
   - service.yml
   - secret.yml
 
-images:
-  - name: venisasarah/chai-devops
-    newTag: lastes
-
 # (optional) you can put commonLabels or namespace here if you want
 # commonLabels:
 #   app: chai-app
