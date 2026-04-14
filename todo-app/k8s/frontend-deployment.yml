@@ -1,0 +1,23 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: frontend-deployment
+  namespace: todo-app
+
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: todo-app
+  template:
+    metadata:
+      name: frontend-pod
+      namespace: todo-app
+      labels:
+        app: todo-app
+    spec:
+      containers:
+      - name: frontend
+        image: venisasarah/todo-frontend:latest
+        ports:
+        - containerPort: 80
