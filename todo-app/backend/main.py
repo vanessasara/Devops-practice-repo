@@ -3,10 +3,12 @@ from pymongo import MongoClient
 from pydantic import BaseModel
 from typing import List, Optional
 from bson import ObjectId
+import os
 
 app = FastAPI()
 
-client = MongoClient("mongodb://mongodb:27017")
+MONGO_URL = os.getenv("MONGO_URL")
+client = MongoClient(MONGO_URL)
 db = client.todos_db
 collection = db.todos
 
