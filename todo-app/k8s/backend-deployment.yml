@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend-deployment
+  namespace: todo-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: todo-app
+  template:
+    metadata:
+      name: backend-deployement
+      namespace: todo-app
+      labels:
+        app: todo-app
+    spec:
+      containers:
+      - name: backend-deployement
+        image: venisasarah/todo-backend:v1.0.1
+        ports:
+        - containerPort: 8000
+        env:
+        - name: MONGO_URL
+          value: "mongodb://mongodb:27017"
