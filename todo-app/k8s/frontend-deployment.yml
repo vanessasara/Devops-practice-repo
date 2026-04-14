@@ -3,21 +3,42 @@ kind: Deployment
 metadata:
   name: frontend-deployment
   namespace: todo-app
-
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app: todo-app
+      app: frontend
   template:
     metadata:
       name: frontend-pod
       namespace: todo-app
       labels:
-        app: todo-app
+        app: frontend
     spec:
       containers:
       - name: frontend
-        image: venisasarah/todo-frontend:latest
+        image: venisasarah/todo-frontend:v1.0.3
+        env:
+        - name: HOSTNAME
+          value: "0.0.0.0"
         ports:
-        - containerPort: 80
+        - containerPort: 3000
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "256Mi"
+            cpu: "500m"
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 3000
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 3000
+          initialDelaySeconds: 15
+          periodSeconds: 20

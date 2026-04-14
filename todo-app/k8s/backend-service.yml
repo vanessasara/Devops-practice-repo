@@ -5,7 +5,8 @@ metadata:
   namespace: todo-app
 spec:
   selector:
-    app: todo-app
+    app: backend
   ports:
-  - port: 8000
+  - protocol: TCP
+    port: 8000
     targetPort: 8000
