@@ -1,9 +1,7 @@
 name: Build & Push Docker images
 
 on:
-  push:
-    tags:
-      - 'v*.*.*'
+  workflow_dispatch:
 
 permissions:
   contents: read
@@ -17,8 +15,10 @@ jobs:
         include:
           - context: todo-app/backend
             image: venisasarah/todo-backend
+            version: v1.0.2
           - context: todo-app/frontend
             image: venisasarah/todo-frontend
+            version: v1.0.5
 
     steps:
       - uses: actions/checkout@v4
@@ -36,4 +36,4 @@ jobs:
           push: true
           tags: |
             ${{ matrix.image }}:latest
-            ${{ matrix.image }}:${{ github.ref_name }}
+            ${{ matrix.image }}:${{ matrix.version }}
