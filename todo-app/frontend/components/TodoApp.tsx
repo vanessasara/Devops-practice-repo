@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useRef } from "react";
+import api from "@/api";
 
 export interface Todo {
   id: string;
@@ -17,32 +18,35 @@ export default function TodoApp() {
   const inputRef = useRef<HTMLInputElement>(null);
 
   const fetchTodos = async () => {
-    const res = await fetch("/api/todos");
-    const data: Todo[] = await res.json();
-    setTodos(data);
-    setLoading(false);
+    try {
+      const response = await api.get("/api/todos");
+      setTodos(response.data);
+      setLoading(false);
+    } catch (error) {
+      console.error("Error fetching todos", error);
+    }
   };
 
   useEffect(() => { fetchTodos(); }, []);
 
   const addTodo = async () => {
     if (!input.trim()) return;
-    await fetch("/api/todos", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ text: input.trim(), done: false }),
-    });
-    setInput("");
-    fetchTodos();
+    try {
+      await api.post("/api/todos", { text: input.trim(), done: false });
+      setInput("");
+      fetchTodos();
+    } catch (error) {
+      console.error("Error adding todo", error);
+    }
   };
 
   const toggleTodo = async (id: string, done: boolean) => {
-    await fetch(`/api/todos/${id}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ done: !done }),
-    });
-    fetchTodos();
+    try {
+      await api.patch(`/api/todos/${id}`, { done: !done });
+      fetchTodos();
+    } catch (error) {
+      console.error("Error toggling todo", error);
+    }
   };
 
   const startEdit = (todo: Todo) => {
@@ -52,25 +56,33 @@ export default function TodoApp() {
 
   const saveEdit = async (id: string) => {
     if (!editText.trim()) return;
-    await fetch(`/api/todos/${id}`, {
-      method: "PATCH",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ text: editText.trim() }),
-    });
-    setEditingId(null);
-    fetchTodos();
+    try {
+      await api.patch(`/api/todos/${id}`, { text: editText.trim() });
+      setEditingId(null);
+      fetchTodos();
+    } catch (error) {
+      console.error("Error saving edit", error);
+    }
   };
 
   const deleteTodo = async (id: string) => {
-    await fetch(`/api/todos/${id}`, { method: "DELETE" });
-    fetchTodos();
+    try {
+      await api.delete(`/api/todos/${id}`);
+      fetchTodos();
+    } catch (error) {
+      console.error("Error deleting todo", error);
+    }
   };
 
   const clearCompleted = async () => {
-    await Promise.all(
-      todos.filter((t) => t.done).map((t) => fetch(`/api/todos/${t.id}`, { method: "DELETE" }))
-    );
-    fetchTodos();
+    try {
+      await Promise.all(
+        todos.filter((t) => t.done).map((t) => api.delete(`/api/todos/${t.id}`))
+      );
+      fetchTodos();
+    } catch (error) {
+      console.error("Error clearing completed", error);
+    }
   };
 
   const active = todos.filter((t) => !t.done);
@@ -90,8 +102,6 @@ export default function TodoApp() {
       `}</style>
 
       <div className="w-full max-w-lg">
-
-        {/* Header */}
         <div className="mb-10">
           <p className="text-xs tracking-[0.25em] uppercase text-zinc-500 mb-2">{today}</p>
           <h1 className="font-display text-5xl font-bold italic text-white leading-tight">
@@ -103,7 +113,6 @@ export default function TodoApp() {
           </p>
         </div>
 
-        {/* Add input */}
         <div className="flex mb-8 rounded-xl overflow-hidden border border-zinc-800 bg-zinc-900 focus-within:border-emerald-500 transition-colors duration-200">
           <input
             ref={inputRef}
@@ -121,14 +130,12 @@ export default function TodoApp() {
           </button>
         </div>
 
-        {/* Loading */}
         {loading && (
           <div className="text-center py-16 text-zinc-600 text-sm tracking-widest uppercase">
             Loading...
           </div>
         )}
 
-        {/* Empty state */}
         {!loading && todos.length === 0 && (
           <div className="text-center py-16">
             <div className="text-4xl mb-4 opacity-30">◇</div>
@@ -136,7 +143,6 @@ export default function TodoApp() {
           </div>
         )}
 
-        {/* Active todos */}
         {active.length > 0 && (
           <div className="mb-6">
             <p className="text-[10px] tracking-[0.3em] uppercase text-zinc-600 mb-3 pl-1">Active</p>
@@ -159,7 +165,6 @@ export default function TodoApp() {
           </div>
         )}
 
-        {/* Done todos */}
         {done.length > 0 && (
           <div className="mb-6">
             <p className="text-[10px] tracking-[0.3em] uppercase text-zinc-600 mb-3 pl-1">Completed</p>
@@ -182,7 +187,6 @@ export default function TodoApp() {
           </div>
         )}
 
-        {/* Footer */}
         {done.length > 0 && (
           <div className="flex justify-end mt-4">
             <button
@@ -222,7 +226,6 @@ function TodoRow({
           : "bg-zinc-900 border-zinc-800 hover:border-zinc-700"
         }`}
     >
-      {/* Checkbox */}
       <button
         onClick={() => onToggle(todo.id, todo.done)}
         className={`w-5 h-5 rounded-full border-2 flex items-center justify-center shrink-0 transition-all duration-150
@@ -233,18 +236,11 @@ function TodoRow({
       >
         {todo.done && (
           <svg className="w-2.5 h-2.5" viewBox="0 0 10 10" fill="none">
-            <path
-              d="M1.5 5l2.5 2.5 4.5-5"
-              stroke="currentColor"
-              strokeWidth="1.8"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
+            <path d="M1.5 5l2.5 2.5 4.5-5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
         )}
       </button>
 
-      {/* Text / Edit input */}
       {isEditing ? (
         <input
           autoFocus
@@ -257,64 +253,27 @@ function TodoRow({
           className="flex-1 bg-transparent text-sm text-zinc-100 outline-none border-b border-emerald-500 pb-0.5"
         />
       ) : (
-        <span
-          className={`flex-1 text-sm leading-relaxed ${
-            todo.done ? "line-through text-zinc-600" : "text-zinc-200"
-          }`}
-        >
+        <span className={`flex-1 text-sm leading-relaxed ${todo.done ? "line-through text-zinc-600" : "text-zinc-200"}`}>
           {todo.text}
         </span>
       )}
 
-      {/* Action buttons */}
-      <div
-        className={`flex gap-1 transition-opacity duration-150 ${
-          isEditing ? "opacity-100" : "opacity-0 group-hover:opacity-100"
-        }`}
-      >
+      <div className={`flex gap-1 transition-opacity duration-150 ${isEditing ? "opacity-100" : "opacity-0 group-hover:opacity-100"}`}>
         {isEditing ? (
           <>
-            <button
-              onClick={() => onSave(todo.id)}
-              className="w-7 h-7 rounded-lg flex items-center justify-center text-emerald-400 hover:bg-emerald-500/10 transition-colors text-xs font-bold"
-            >
-              ✓
-            </button>
-            <button
-              onClick={onCancel}
-              className="w-7 h-7 rounded-lg flex items-center justify-center text-zinc-500 hover:bg-zinc-800 transition-colors text-xs"
-            >
-              ✕
-            </button>
+            <button onClick={() => onSave(todo.id)} className="w-7 h-7 rounded-lg flex items-center justify-center text-emerald-400 hover:bg-emerald-500/10 transition-colors text-xs font-bold">✓</button>
+            <button onClick={onCancel} className="w-7 h-7 rounded-lg flex items-center justify-center text-zinc-500 hover:bg-zinc-800 transition-colors text-xs">✕</button>
           </>
         ) : (
           <>
-            <button
-              onClick={() => onEdit(todo)}
-              title="Edit"
-              className="w-7 h-7 rounded-lg flex items-center justify-center text-zinc-500 hover:text-zinc-200 hover:bg-zinc-800 transition-colors"
-            >
+            <button onClick={() => onEdit(todo)} title="Edit" className="w-7 h-7 rounded-lg flex items-center justify-center text-zinc-500 hover:text-zinc-200 hover:bg-zinc-800 transition-colors">
               <svg className="w-3.5 h-3.5" viewBox="0 0 16 16" fill="none">
-                <path
-                  d="M11.5 2.5l2 2-9 9H2.5v-2l9-9z"
-                  stroke="currentColor"
-                  strokeWidth="1.4"
-                  strokeLinejoin="round"
-                />
+                <path d="M11.5 2.5l2 2-9 9H2.5v-2l9-9z" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round"/>
               </svg>
             </button>
-            <button
-              onClick={() => onDelete(todo.id)}
-              title="Delete"
-              className="w-7 h-7 rounded-lg flex items-center justify-center text-zinc-500 hover:text-rose-400 hover:bg-rose-500/10 transition-colors"
-            >
+            <button onClick={() => onDelete(todo.id)} title="Delete" className="w-7 h-7 rounded-lg flex items-center justify-center text-zinc-500 hover:text-rose-400 hover:bg-rose-500/10 transition-colors">
               <svg className="w-3.5 h-3.5" viewBox="0 0 16 16" fill="none">
-                <path
-                  d="M4 4l8 8M12 4l-8 8"
-                  stroke="currentColor"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                />
+                <path d="M4 4l8 8M12 4l-8 8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round"/>
               </svg>
             </button>
           </>

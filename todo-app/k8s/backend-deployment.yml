@@ -17,28 +17,7 @@ spec:
     spec:
       containers:
       - name: backend
-        image: venisasarah/todo-backend:v1.0.1
+        image: venisasarah/todo-backend:v1.0.2
         ports:
         - containerPort: 8000
-        env:
-        - name: MONGO_URL
-          value: "mongodb://mongodb:27017"
-        resources:
-          requests:
-            memory: "128Mi"
-            cpu: "100m"
-          limits:
-            memory: "256Mi"
-            cpu: "500m"
-        readinessProbe:
-          httpGet:
-            path: /docs
-            port: 8000
-          initialDelaySeconds: 5
-          periodSeconds: 10
-        livenessProbe:
-          httpGet:
-            path: /docs
-            port: 8000
-          initialDelaySeconds: 15
-          periodSeconds: 20
+      
