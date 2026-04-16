@@ -1,5 +1,5 @@
 <!-- BEGIN:nextjs-agent-rules -->
-# This is NOT the Next.js you know
+# Next.js 15
 
-This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` before writing any code. Heed deprecation notices.
+This project uses Next.js 15.3.x with React 18. Standard Next.js App Router conventions apply. Refer to `node_modules/next/dist/docs/` for current API documentation if needed.
 <!-- END:nextjs-agent-rules -->

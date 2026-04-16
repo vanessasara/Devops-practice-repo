@@ -2,9 +2,9 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: frontend-deployment
-  namespace: todo-app
+  
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: frontend
@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: frontend
-        image: venisasarah/todo-frontend:v1.0.5
+        image: venisasarah/todo-frontend:v1.0.0
         ports:
         - containerPort: 3000
         

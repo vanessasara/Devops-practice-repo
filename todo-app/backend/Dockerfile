@@ -1,24 +1,29 @@
-FROM python:3.11-slim
-
-# Install system deps (needed for uv)
-RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
-
-# Install uv
-RUN curl -Ls https://astral.sh/uv/install.sh | sh
-
-ENV PATH="/root/.local/bin:$PATH"
-
+# Stage 1: Build
+FROM python:3.12-slim AS builder
 WORKDIR /app
 
-# Copy dependency files first (for caching)
+RUN pip install --no-cache-dir uv
+
 COPY pyproject.toml uv.lock* ./
+RUN uv sync --frozen --no-dev
 
-# Install dependencies
-RUN uv sync --frozen --python 3.12
+# Stage 2: Production
+FROM python:3.12-slim AS runner
+WORKDIR /app
 
-# Copy rest of app
-COPY . .
+ENV PYTHONUNBUFFERED=1
+ENV PYTHONDONTWRITEBYTECODE=1
+
+RUN groupadd --gid 1001 appgroup && \
+    useradd --uid 1001 --gid appgroup --create-home appuser
+
+COPY --from=builder /app/.venv /app/.venv
+COPY --chown=appuser:appgroup main.py ./
+
+ENV PATH="/app/.venv/bin:$PATH"
+
+USER appuser
 
 EXPOSE 8000
 
-CMD ["uv", "run", "uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]

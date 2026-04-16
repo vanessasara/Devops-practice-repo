@@ -2,9 +2,9 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: backend-deployment
-  namespace: todo-app
+  
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: backend
@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: backend
-        image: venisasarah/todo-backend:v1.0.2
+        image: venisasarah/todo-backend:v1.0.0
         ports:
         - containerPort: 8000
       
