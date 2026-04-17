@@ -8,7 +8,7 @@ spec:
   source:
     repoURL:  https://github.com/vanessasara/Devops-practice-repo.git
     targetRevision: master       # Git branch to track
-    path: todo-app/k8s/apps   # Path where child app manifests are stored
+    path: todo-app/apps   # Path where child app manifests are stored
   destination:
     server:  https://kubernetes.default.svc  # Deploying inside the same cluster
     namespace: argocd             # Applications (CRDs) must live in argocd namespace

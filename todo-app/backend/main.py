@@ -16,6 +16,18 @@ app.add_middleware(
 
 _TODOS: dict[str, dict] = {}
 
+# Sample todos initialized on startup
+_SAMPLE_TODOS = [
+    {"id": "sample1", "text": "Learn Kubernetes basics", "done": False},
+    {"id": "sample2", "text": "Set up Docker Compose", "done": True},
+    {"id": "sample3", "text": "Deploy app to cluster", "done": False},
+    {"id": "sample4", "text": "Configure CI/CD pipeline", "done": False},
+    {"id": "sample5", "text": "Monitor application logs", "done": True},
+]
+
+for sample in _SAMPLE_TODOS:
+    _TODOS[sample["id"]] = {"text": sample["text"], "done": sample["done"]}
+
 
 class Todo(BaseModel):
     text: str
