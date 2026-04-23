@@ -1,0 +1,216 @@
+# ═══════════════════════════════════════════════════════
+# KARGO PROJECT
+# Project has NO namespace field — it creates its own
+# namespace equal to its name: "todo-pipeline"
+# All Warehouse and Stage objects go in that namespace.
+# ═══════════════════════════════════════════════════════
+apiVersion: kargo.akuity.io/v1alpha1
+kind: Project
+metadata:
+  name: todo-pipeline
+---
+# ═══════════════════════════════════════════════════════
+# WAREHOUSE
+# namespace must match the Project name exactly.
+# Watches Docker Hub for new tags on both images.
+# ═══════════════════════════════════════════════════════
+apiVersion: kargo.akuity.io/v1alpha1
+kind: Warehouse
+metadata:
+  name: todo-warehouse
+  namespace: todo-pipeline
+spec:
+  subscriptions:
+    - image:
+        repoURL: venisasarah/todo-frontend
+        imageSelectionStrategy: SemVer
+        semverConstraint: ">=0.0.0"
+        discoveryLimit: 5
+    - image:
+        repoURL: venisasarah/todo-backend
+        imageSelectionStrategy: SemVer
+        semverConstraint: ">=0.0.0"
+        discoveryLimit: 5
+---
+# ═══════════════════════════════════════════════════════
+# STAGE — DEV
+# requestedFreight replaces old spec.subscriptions
+# promotionTemplate replaces old spec.promotionMechanisms
+# ═══════════════════════════════════════════════════════
+apiVersion: kargo.akuity.io/v1alpha1
+kind: Stage
+metadata:
+  name: dev
+  namespace: todo-pipeline
+spec:
+  requestedFreight:
+    - origin:
+        kind: Warehouse
+        name: todo-warehouse
+      sources:
+        direct: true
+  promotionTemplate:
+    spec:
+      vars:
+        - name: gitRepo
+          value: https://github.com/vanessasara/Devops-practice-repo.git
+      steps:
+        - uses: git-clone
+          config:
+            repoURL: ${{ vars.gitRepo }}
+            checkout:
+              - branch: master
+                path: ./out
+        - uses: yaml-update
+          as: update-frontend
+          config:
+            path: ./out/envs/dev/deployment.yaml
+            updates:
+              - key: spec.template.spec.containers.0.image
+                value: ${{ imageFrom("venisasarah/todo-frontend", warehouse("todo-warehouse")).Repo }}:${{ imageFrom("venisasarah/todo-frontend", warehouse("todo-warehouse")).Tag }}
+        - uses: yaml-update
+          as: update-backend
+          config:
+            path: ./out/envs/dev/deployment.yaml
+            updates:
+              - key: spec.template.spec.containers.0.image
+                value: ${{ imageFrom("venisasarah/todo-backend", warehouse("todo-warehouse")).Repo }}:${{ imageFrom("venisasarah/todo-backend", warehouse("todo-warehouse")).Tag }}
+        - uses: git-commit
+          as: commit
+          config:
+            path: ./out
+            messageFromSteps:
+              - update-frontend
+              - update-backend
+        - uses: git-push
+          config:
+            path: ./out
+        - uses: argocd-update
+          config:
+            apps:
+              - name: todo-dev
+                sources:
+                  - repoURL: ${{ vars.gitRepo }}
+                    desiredRevision: ${{ outputs.commit.commit }}
+---
+# ═══════════════════════════════════════════════════════
+# STAGE — STAGING
+# sources.stages means it only gets Freight verified in dev
+# ═══════════════════════════════════════════════════════
+apiVersion: kargo.akuity.io/v1alpha1
+kind: Stage
+metadata:
+  name: staging
+  namespace: todo-pipeline
+spec:
+  requestedFreight:
+    - origin:
+        kind: Warehouse
+        name: todo-warehouse
+      sources:
+        stages:
+          - dev
+  promotionTemplate:
+    spec:
+      vars:
+        - name: gitRepo
+          value: https://github.com/vanessasara/Devops-practice-repo.git
+      steps:
+        - uses: git-clone
+          config:
+            repoURL: ${{ vars.gitRepo }}
+            checkout:
+              - branch: master
+                path: ./out
+        - uses: yaml-update
+          as: update-frontend
+          config:
+            path: ./out/envs/staging/deployment.yaml
+            updates:
+              - key: spec.template.spec.containers.0.image
+                value: ${{ imageFrom("venisasarah/todo-frontend", warehouse("todo-warehouse")).Repo }}:${{ imageFrom("venisasarah/todo-frontend", warehouse("todo-warehouse")).Tag }}
+        - uses: yaml-update
+          as: update-backend
+          config:
+            path: ./out/envs/staging/deployment.yaml
+            updates:
+              - key: spec.template.spec.containers.0.image
+                value: ${{ imageFrom("venisasarah/todo-backend", warehouse("todo-warehouse")).Repo }}:${{ imageFrom("venisasarah/todo-backend", warehouse("todo-warehouse")).Tag }}
+        - uses: git-commit
+          as: commit
+          config:
+            path: ./out
+            messageFromSteps:
+              - update-frontend
+              - update-backend
+        - uses: git-push
+          config:
+            path: ./out
+        - uses: argocd-update
+          config:
+            apps:
+              - name: todo-staging
+                sources:
+                  - repoURL: ${{ vars.gitRepo }}
+                    desiredRevision: ${{ outputs.commit.commit }}
+---
+# ═══════════════════════════════════════════════════════
+# STAGE — PROD
+# Manual approval required — no autoPromotion in Project
+# ═══════════════════════════════════════════════════════
+apiVersion: kargo.akuity.io/v1alpha1
+kind: Stage
+metadata:
+  name: prod
+  namespace: todo-pipeline
+spec:
+  requestedFreight:
+    - origin:
+        kind: Warehouse
+        name: todo-warehouse
+      sources:
+        stages:
+          - staging
+  promotionTemplate:
+    spec:
+      vars:
+        - name: gitRepo
+          value: https://github.com/vanessasara/Devops-practice-repo.git
+      steps:
+        - uses: git-clone
+          config:
+            repoURL: ${{ vars.gitRepo }}
+            checkout:
+              - branch: master
+                path: ./out
+        - uses: yaml-update
+          as: update-frontend
+          config:
+            path: ./out/envs/prod/deployment.yaml
+            updates:
+              - key: spec.template.spec.containers.0.image
+                value: ${{ imageFrom("venisasarah/todo-frontend", warehouse("todo-warehouse")).Repo }}:${{ imageFrom("venisasarah/todo-frontend", warehouse("todo-warehouse")).Tag }}
+        - uses: yaml-update
+          as: update-backend
+          config:
+            path: ./out/envs/prod/deployment.yaml
+            updates:
+              - key: spec.template.spec.containers.0.image
+                value: ${{ imageFrom("venisasarah/todo-backend", warehouse("todo-warehouse")).Repo }}:${{ imageFrom("venisasarah/todo-backend", warehouse("todo-warehouse")).Tag }}
+        - uses: git-commit
+          as: commit
+          config:
+            path: ./out
+            messageFromSteps:
+              - update-frontend
+              - update-backend
+        - uses: git-push
+          config:
+            path: ./out
+        - uses: argocd-update
+          config:
+            apps:
+              - name: todo-prod
+                sources:
+                  - repoURL: ${{ vars.gitRepo }}
+                    desiredRevision: ${{ outputs.commit.commit }}
