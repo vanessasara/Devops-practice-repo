@@ -8,4 +8,5 @@ spec:
     - image:
         repoURL: ghcr.io/nginxinc/nginx-unprivileged
         imageSelectionStrategy: Lexical
-        allowTags: ".*"
+        allowTags: "^latest$"
+        discoveryLimit: 1
