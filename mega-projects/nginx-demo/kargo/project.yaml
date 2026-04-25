@@ -2,3 +2,17 @@ apiVersion: kargo.akuity.io/v1alpha1
 kind: Project
 metadata:
   name: my-app
+
+---
+
+
+apiVersion: kargo.akuity.io/v1alpha1
+kind: ProjectConfig
+metadata:
+  name: test
+  namespace: my-app
+spec:
+  promotionPolicies:
+  - stageSelector:
+      name: test
+    autoPromotionEnabled: true
