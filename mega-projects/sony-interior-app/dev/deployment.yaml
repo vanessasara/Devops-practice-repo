@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: sony-interior
-          image: venisasarah/sony-interior:frontendv1.0.3
+          image: venisasarah/sony-interior:frontend
           ports:
             - containerPort: 3000
 ---
