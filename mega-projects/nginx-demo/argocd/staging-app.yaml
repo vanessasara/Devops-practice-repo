@@ -8,7 +8,7 @@ spec:
   source:
     repoURL: https://github.com/vanessasara/Devops-practice-repo.git
     targetRevision: master
-    path: mega-projects/sony-interior-app/staging
+    path: mega-projects/nginx-demo/staging
   destination:
     server: https://kubernetes.default.svc
     namespace: sony-staging

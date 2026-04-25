@@ -22,7 +22,7 @@ spec:
                 path: ./repo
         - uses: yaml-update
           config:
-            path: ./repo/mega-projects/sony-interior-app/staging/deployment.yaml
+            path: ./repo/mega-projects/nginx-demo/staging/deployment.yaml
             updates:
               - key: spec.template.spec.containers[0].image
                 value: ${{ imageFrom("docker.io/nginxdemos/hello") }}
