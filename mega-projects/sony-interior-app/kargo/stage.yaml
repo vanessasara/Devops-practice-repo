@@ -1,0 +1,124 @@
+# stages.yaml
+apiVersion: kargo.akuity.io/v1alpha1
+kind: Stage
+metadata:
+  name: dev
+  namespace: my-app
+spec:
+  requestedFreight:
+    - origin:
+        kind: Warehouse
+        name: sony-interior-warehouse
+      sources:
+        direct: true
+  promotionTemplate:
+    spec:
+      steps:
+        - uses: git-clone
+          config:
+            repoURL: https://github.com/vanessasara/Devops-practice-repo.git
+            checkout:
+              - branch: main
+                path: ./repo
+        - uses: yaml-update
+          config:
+            path: ./repo/mega-projects/sony-interior-app/dev/deployment.yaml
+            updates:
+              - key: spec.template.spec.containers[0].image
+                value: ${{ imageFrom("docker.io/venisasarah/sony-interior") }}
+        - uses: git-commit
+          config:
+            path: ./repo
+            message: "chore: promote dev to ${{ imageFrom('docker.io/venisasarah/sony-interior') }}"
+        - uses: git-push
+          config:
+            path: ./repo
+        - uses: argocd-update
+          config:
+            apps:
+              - name: sony-interior-dev
+                namespace: argocd
+
+---
+apiVersion: kargo.akuity.io/v1alpha1
+kind: Stage
+metadata:
+  name: staging
+  namespace: my-app
+spec:
+  requestedFreight:
+    - origin:
+        kind: Warehouse
+        name: sony-interior-warehouse
+      sources:
+        stages:
+          - dev
+  promotionTemplate:
+    spec:
+      steps:
+        - uses: git-clone
+          config:
+            repoURL: https://github.com/vanessasara/Devops-practice-repo.git
+            checkout:
+              - branch: main
+                path: ./repo
+        - uses: yaml-update
+          config:
+            path: ./repo/mega-projects/sony-interior-app/staging/deployment.yaml
+            updates:
+              - key: spec.template.spec.containers[0].image
+                value: ${{ imageFrom("docker.io/venisasarah/sony-interior") }}
+        - uses: git-commit
+          config:
+            path: ./repo
+            message: "chore: promote staging to ${{ imageFrom('docker.io/venisasarah/sony-interior') }}"
+        - uses: git-push
+          config:
+            path: ./repo
+        - uses: argocd-update
+          config:
+            apps:
+              - name: sony-interior-staging
+                namespace: argocd
+
+---
+apiVersion: kargo.akuity.io/v1alpha1
+kind: Stage
+metadata:
+  name: prod
+  namespace: my-app
+spec:
+  requestedFreight:
+    - origin:
+        kind: Warehouse
+        name: sony-interior-warehouse
+      sources:
+        stages:
+          - staging
+  promotionTemplate:
+    spec:
+      steps:
+        - uses: git-clone
+          config:
+            repoURL: https://github.com/vanessasara/Devops-practice-repo.git
+            checkout:
+              - branch: main
+                path: ./repo
+        - uses: yaml-update
+          config:
+            path: ./repo/mega-projects/sony-interior-app/prod/deployment.yaml
+            updates:
+              - key: spec.template.spec.containers[0].image
+                value: ${{ imageFrom("docker.io/venisasarah/sony-interior") }}
+        - uses: git-commit
+          config:
+            path: ./repo
+            message: "chore: promote prod to ${{ imageFrom('docker.io/venisasarah/sony-interior') }}"
+        - uses: git-push
+          config:
+            path: ./repo
+        - uses: argocd-update
+          config:
+            apps:
+              - name: sony-interior-prod
+                namespace: argocd
