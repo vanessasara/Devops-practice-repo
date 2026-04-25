@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: nginx-demo-prod
+  name: nginx
   namespace: nginx-prod
 spec:
   replicas: 1
@@ -14,7 +14,7 @@ spec:
         app: nginx-demo-prod
     spec:
       containers:
-        - name: nginx-demo-prod
-          image: ghcr.io/nginxinc/nginx-unprivileged:latest
+        - name: nginx
+          image: nginx:latest
           ports:
             - containerPort: 80
