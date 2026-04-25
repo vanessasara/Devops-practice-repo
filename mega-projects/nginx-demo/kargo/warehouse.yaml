@@ -6,6 +6,6 @@ metadata:
 spec:
   subscriptions:
     - image:
-        repoURL: docker.io/library/nginx
+        repoURL: ghcr.io/nginxinc/nginx-unprivileged
         imageSelectionStrategy: Lexical
         allowTags: ".*"
