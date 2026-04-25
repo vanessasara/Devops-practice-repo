@@ -1,11 +1,11 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: nginx-demo
-  namespace: sony-dev
+  name: nginx-demo-dev
+  namespace: nginx-dev
 spec:
   selector:
-    app: nginx-demo
+    app: nginx-demo-dev
   ports:
     - port: 80
       targetPort: 80

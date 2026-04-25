@@ -1,7 +1,7 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: sony-interior-dev
+  name: nginx-demo-dev
   namespace: argocd
 spec:
   project: default
@@ -11,7 +11,7 @@ spec:
     path: mega-projects/nginx-demo/dev
   destination:
     server: https://kubernetes.default.svc
-    namespace: sony-dev
+    namespace: nginx-dev
   syncPolicy:
     automated:
       prune: true

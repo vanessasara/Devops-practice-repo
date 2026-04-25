@@ -1,20 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: nginx-demo
-  namespace: sony-staging
+  name: nginx-demo-staging
+  namespace: nginx-staging
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: nginx-demo
+      app: nginx-demo-staging
   template:
     metadata:
       labels:
-        app: nginx-demo
+        app: nginx-demo-staging
     spec:
       containers:
-        - name: nginx-demo
+        - name: nginx-demo-staging
           image: nginxdemos/hello:latest
           ports:
             - containerPort: 80

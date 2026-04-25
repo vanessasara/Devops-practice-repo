@@ -36,5 +36,5 @@ spec:
         - uses: argocd-update
           config:
             apps:
-              - name: sony-interior-staging
+              - name: nginx-staging
                 namespace: argocd

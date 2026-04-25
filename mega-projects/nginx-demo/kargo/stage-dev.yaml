@@ -35,5 +35,5 @@ spec:
         - uses: argocd-update
           config:
             apps:
-              - name: sony-interior-dev
+              - name: nginx-dev
                 namespace: argocd
