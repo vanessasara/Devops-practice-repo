@@ -1,0 +1,11 @@
+apiVersion: kargo.akuity.io/v1alpha1
+kind: Warehouse
+metadata:
+  name: nginx-demo-warehouse
+  namespace: my-app
+spec:
+  subscriptions:
+    - image:
+        repoURL: docker.io/nginxdemos/hello
+        imageSelectionStrategy: Lexical
+        allowTags: ".*"
