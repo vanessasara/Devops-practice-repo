@@ -23,7 +23,7 @@ spec:
           config:
             path: ./repo/mega-projects/nginx-demo/dev/deployment.yaml
             updates:
-              - key: spec.template.spec.containers[0].image
+              - key: spec.template.spec.containers.0.image
                 value: ${{ imageFrom("docker.io/nginxdemos/hello") }}
         - uses: git-commit
           config:
