@@ -1,0 +1,26 @@
+api:
+  host: localhost   # change to your actual domain if exposing externally
+  adminAccount:
+    passwordHash: "$$2y$$10$$H.fI5wE7sx9niXSem6tyduveVdc6elR1ke19ATCxysuW4/UJ2e3H."   # escape $ as $$
+    tokenSigningKey: "KyqJhjtzpdd6GKrskQuEJ7NU4toKiFGV"
+    tokenTTL: 24h
+  tls:
+    selfSignedCert: true   # needs cert-manager installed
+
+controller:
+  logLevel: INFO
+  argocd:
+    namespace: argocd
+    watchArgocdNamespaceOnly: true
+  gitClient:
+    name: Kargo
+    email: no-reply@kargo.io
+    pushIntegrationPolicy: RebaseOrMerge
+
+garbageCollector:
+  enabled: true
+  schedule: "0 2 * * *"
+  maxRetainedPromotions: 20
+  minPromotionDeletionAge: 336h
+  maxRetainedFreight: 20
+  minFreightDeletionAge: 336h
