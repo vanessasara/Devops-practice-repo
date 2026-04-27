@@ -1,0 +1,56 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: todo-dev
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/vanessasara/Devops-practice-repo.git
+    targetRevision: master
+    path: mega-projects/todo-promotion/dev
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: todo-dev
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: todo-staging
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/vanessasara/Devops-practice-repo.git
+    targetRevision: master
+    path: mega-projects/todo-promotion/staging
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: todo-staging
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+---
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: todo-prod
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/vanessasara/Devops-practice-repo.git
+    targetRevision: master
+    path: mega-projects/todo-promotion/prod
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: todo-prod
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true

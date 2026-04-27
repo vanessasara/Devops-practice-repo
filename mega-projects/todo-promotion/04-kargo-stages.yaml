@@ -1,0 +1,157 @@
+apiVersion: kargo.akuity.io/v1alpha1
+kind: Stage
+metadata:
+  name: dev
+  namespace: todo-promotion
+spec:
+  requestedFreight:
+    - origin:
+        kind: Warehouse
+        name: todo-warehouse
+      sources:
+        direct: true
+  promotionTemplate:
+    spec:
+      steps:
+        - uses: git-clone
+          config:
+            repoURL: https://github.com/vanessasara/Devops-practice-repo.git
+            checkout:
+              - branch: master
+                path: ./repo
+
+        - uses: yaml-update
+          config:
+            path: repo/mega-projects/todo-promotion/dev/frontend-deployment.yaml
+            updates:
+              - key: spec.template.spec.containers.0.image
+                value: venisasarah/todo-frontend:${{ imageFrom("index.docker.io/venisasarah/todo-frontend", freight).tag }}
+
+        - uses: yaml-update
+          config:
+            path: repo/mega-projects/todo-promotion/dev/backend-deployment.yaml
+            updates:
+              - key: spec.template.spec.containers.0.image
+                value: venisasarah/todo-backend:${{ imageFrom("index.docker.io/venisasarah/todo-backend", freight).tag }}
+
+        - uses: git-commit
+          config:
+            path: ./repo
+            message: >-
+              chore(dev): update images
+
+        - uses: git-push
+          config:
+            path: ./repo
+
+        - uses: argocd-update
+          config:
+            apps:
+              - name: todo-dev
+                namespace: argocd
+---
+apiVersion: kargo.akuity.io/v1alpha1
+kind: Stage
+metadata:
+  name: staging
+  namespace: todo-promotion
+spec:
+  requestedFreight:
+    - origin:
+        kind: Warehouse
+        name: todo-warehouse
+      sources:
+        stages:
+          - dev
+  promotionTemplate:
+    spec:
+      steps:
+        - uses: git-clone
+          config:
+            repoURL: https://github.com/vanessasara/Devops-practice-repo.git
+            checkout:
+              - branch: master
+                path: ./repo
+
+        - uses: yaml-update
+          config:
+            path: repo/mega-projects/todo-promotion/staging/frontend-deployment.yaml
+            updates:
+              - key: spec.template.spec.containers.0.image
+                value: venisasarah/todo-frontend:${{ imageFrom("index.docker.io/venisasarah/todo-frontend", freight).tag }}
+
+        - uses: yaml-update
+          config:
+            path: repo/mega-projects/todo-promotion/staging/backend-deployment.yaml
+            updates:
+              - key: spec.template.spec.containers.0.image
+                value: venisasarah/todo-backend:${{ imageFrom("index.docker.io/venisasarah/todo-backend", freight).tag }}
+
+        - uses: git-commit
+          config:
+            path: ./repo
+            message: >-
+              chore(staging): update images
+
+        - uses: git-push
+          config:
+            path: ./repo
+
+        - uses: argocd-update
+          config:
+            apps:
+              - name: todo-staging
+                namespace: argocd
+---
+apiVersion: kargo.akuity.io/v1alpha1
+kind: Stage
+metadata:
+  name: prod
+  namespace: todo-promotion
+spec:
+  requestedFreight:
+    - origin:
+        kind: Warehouse
+        name: todo-warehouse
+      sources:
+        stages:
+          - staging
+  promotionTemplate:
+    spec:
+      steps:
+        - uses: git-clone
+          config:
+            repoURL: https://github.com/vanessasara/Devops-practice-repo.git
+            checkout:
+              - branch: master
+                path: ./repo
+
+        - uses: yaml-update
+          config:
+            path: repo/mega-projects/todo-promotion/prod/frontend-deployment.yaml
+            updates:
+              - key: spec.template.spec.containers.0.image
+                value: venisasarah/todo-frontend:${{ imageFrom("index.docker.io/venisasarah/todo-frontend", freight).tag }}
+
+        - uses: yaml-update
+          config:
+            path: repo/mega-projects/todo-promotion/prod/backend-deployment.yaml
+            updates:
+              - key: spec.template.spec.containers.0.image
+                value: venisasarah/todo-backend:${{ imageFrom("index.docker.io/venisasarah/todo-backend", freight).tag }}
+
+        - uses: git-commit
+          config:
+            path: ./repo
+            message: >-
+              chore(prod): update images
+
+        - uses: git-push
+          config:
+            path: ./repo
+
+        - uses: argocd-update
+          config:
+            apps:
+              - name: todo-prod
+                namespace: argocd

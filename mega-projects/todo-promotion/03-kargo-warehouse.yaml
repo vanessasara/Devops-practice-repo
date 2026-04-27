@@ -1,0 +1,16 @@
+apiVersion: kargo.akuity.io/v1alpha1
+kind: Warehouse
+metadata:
+  name: todo-warehouse
+  namespace: todo-promotion
+spec:
+  interval: 5m0s
+  subscriptions:
+    - image:
+        repoURL: index.docker.io/venisasarah/todo-frontend
+        semverConstraint: ">=1.0.0"
+        discoveryLimit: 5
+    - image:
+        repoURL: index.docker.io/venisasarah/todo-backend
+        semverConstraint: ">=1.0.0"
+        discoveryLimit: 5
