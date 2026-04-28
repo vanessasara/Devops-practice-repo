@@ -1,4 +1,4 @@
 api:
   adminAccount:
-    passwordHash: "$$2y$$10$RJ3cTZI5B1VgvwMzTTwa/uGgUPzHZ36e7HFgHVMxri/B1VuFFBXYa"
-    tokenSigningKey: "aJpS9NWyr45XxydSBo8xmHlpElX0TKgw"
+    passwordHash: "$2y$10$HFD4Y6LHjUVB4/AN66VsE.PaEY3TzVjCkOkJ8Oo6KnECvApyxRNwC"
+    tokenSigningKey: "G8fwst7NOSLx9Js3eiwBRXNPqvhxnseh"
