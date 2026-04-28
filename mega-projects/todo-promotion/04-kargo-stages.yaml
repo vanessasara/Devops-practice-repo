@@ -4,6 +4,8 @@ metadata:
   name: dev
   namespace: todo-promotion
 spec:
+  autoPromotion:
+    enabled: true
   requestedFreight:
     - origin:
         kind: Warehouse
@@ -56,6 +58,8 @@ metadata:
   name: staging
   namespace: todo-promotion
 spec:
+  autoPromotion:
+    enabled: true
   requestedFreight:
     - origin:
         kind: Warehouse
