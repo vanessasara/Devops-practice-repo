@@ -3,12 +3,15 @@ kind: Application
 metadata:
   name: todo-dev
   namespace: argocd
+  annotations:
+    # REQUIRED: tells ArgoCD to trust Kargo promotions for this stage
+    kargo.akuity.io/authorized-stage: todo-promotion:dev
 spec:
   project: default
   source:
     repoURL: https://github.com/vanessasara/Devops-practice-repo.git
     targetRevision: master
-    path: mega-projects/todo-promotion/dev
+    path: mega-projects/todo-promotion/envs/dev
   destination:
     server: https://kubernetes.default.svc
     namespace: todo-dev
@@ -16,18 +19,22 @@ spec:
     automated:
       prune: true
       selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: todo-staging
   namespace: argocd
+  annotations:
+    kargo.akuity.io/authorized-stage: todo-promotion:staging
 spec:
   project: default
   source:
     repoURL: https://github.com/vanessasara/Devops-practice-repo.git
     targetRevision: master
-    path: mega-projects/todo-promotion/staging
+    path: mega-projects/todo-promotion/envs/staging
   destination:
     server: https://kubernetes.default.svc
     namespace: todo-staging
@@ -35,18 +42,22 @@ spec:
     automated:
       prune: true
       selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
 ---
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
   name: todo-prod
   namespace: argocd
+  annotations:
+    kargo.akuity.io/authorized-stage: todo-promotion:prod
 spec:
   project: default
   source:
     repoURL: https://github.com/vanessasara/Devops-practice-repo.git
     targetRevision: master
-    path: mega-projects/todo-promotion/prod
+    path: mega-projects/todo-promotion/envs/prod
   destination:
     server: https://kubernetes.default.svc
     namespace: todo-prod
@@ -54,3 +65,5 @@ spec:
     automated:
       prune: true
       selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
