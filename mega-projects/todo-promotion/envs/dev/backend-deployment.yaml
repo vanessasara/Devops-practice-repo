@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: todo-backend
-          image: venisasarah/todo-backend:v1.0.1 # kargo will update this
+          image: venisasarah/todo-backend:v1.0.7
           ports:
             - containerPort: 8000
 ---
