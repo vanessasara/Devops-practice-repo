@@ -25,14 +25,14 @@ spec:
             path: repo/mega-projects/todo-promotion/envs/dev/frontend-deployment.yaml
             updates:
               - key: spec.template.spec.containers.0.image
-                value: venisasarah/todo-frontend:${{ imageFrom("index.docker.io/venisasarah/todo-frontend", freight).tag }}
+                value: venisasarah/todo-frontend:${{ imageFrom("index.docker.io/venisasarah/todo-frontend", warehouse("todo-warehouse")).Tag }}
 
         - uses: yaml-update
           config:
             path: repo/mega-projects/todo-promotion/envs/dev/backend-deployment.yaml
             updates:
               - key: spec.template.spec.containers.0.image
-                value: venisasarah/todo-backend:${{ imageFrom("index.docker.io/venisasarah/todo-backend", freight).tag }}
+                value: venisasarah/todo-backend:${{ imageFrom("index.docker.io/venisasarah/todo-backend", warehouse("todo-warehouse")).Tag }}
 
         - uses: git-commit
           config:
@@ -77,14 +77,14 @@ spec:
             path: repo/mega-projects/todo-promotion/envs/staging/frontend-deployment.yaml
             updates:
               - key: spec.template.spec.containers.0.image
-                value: venisasarah/todo-frontend:${{ imageFrom("index.docker.io/venisasarah/todo-frontend", freight).tag }}
+                value: venisasarah/todo-frontend:${{ imageFrom("index.docker.io/venisasarah/todo-frontend", warehouse("todo-warehouse")).Tag }}
 
         - uses: yaml-update
           config:
             path: repo/mega-projects/todo-promotion/envs/staging/backend-deployment.yaml
             updates:
               - key: spec.template.spec.containers.0.image
-                value: venisasarah/todo-backend:${{ imageFrom("index.docker.io/venisasarah/todo-backend", freight).tag }}
+                value: venisasarah/todo-backend:${{ imageFrom("index.docker.io/venisasarah/todo-backend", warehouse("todo-warehouse")).Tag }}
 
         - uses: git-commit
           config:
@@ -129,14 +129,14 @@ spec:
             path: repo/mega-projects/todo-promotion/envs/prod/frontend-deployment.yaml
             updates:
               - key: spec.template.spec.containers.0.image
-                value: venisasarah/todo-frontend:${{ imageFrom("index.docker.io/venisasarah/todo-frontend", freight).tag }}
+                value: venisasarah/todo-frontend:${{ imageFrom("index.docker.io/venisasarah/todo-frontend", warehouse("todo-warehouse")).Tag }}
 
         - uses: yaml-update
           config:
             path: repo/mega-projects/todo-promotion/envs/prod/backend-deployment.yaml
             updates:
               - key: spec.template.spec.containers.0.image
-                value: venisasarah/todo-backend:${{ imageFrom("index.docker.io/venisasarah/todo-backend", freight).tag }}
+                value: venisasarah/todo-backend:${{ imageFrom("index.docker.io/venisasarah/todo-backend", warehouse("todo-warehouse")).Tag }}
 
         - uses: git-commit
           config:

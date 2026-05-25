@@ -1,4 +1,4 @@
 api:
   adminAccount:
-    passwordHash: "$2b$10$Y8eehXHyR.3Mviu4uqTGMOKcBHnm68Te/f782.umWQGBOaQZDQ44G"
-    tokenSigningKey: "G8fwst7NOSLx9Js3eiwBRXNPqvhxnseh"
+    passwordHash: "CHANGE_ME_WITH_BCRYPT_HASH"
+    tokenSigningKey: "CHANGE_ME_WITH_RANDOM_SIGNING_KEY"
